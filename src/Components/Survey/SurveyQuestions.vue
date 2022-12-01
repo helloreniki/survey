@@ -31,12 +31,16 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, inject } from "vue";
+
+const emitter = inject('emitter');
 
 const enteredName = ref('');
 const chosenRating = ref('');
 const invalidInput = ref(false);
 const err = ref(null);
+
+
 
 function submitSurvey() {
     if(enteredName.value === '' || chosenRating.value === null) {
@@ -60,6 +64,8 @@ function submitSurvey() {
     }).then(response => {
         if (!response.ok) {
             throw new Error('Data could not be saved! Please try again later.')
+        } else {
+            emitter.emit('SurveyQuestionsSaved', ['prvi', 'drugi']);
         }
     }).catch(error => {
         err.value = error.message;

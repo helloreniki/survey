@@ -13,7 +13,9 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { inject, onMounted, ref } from "vue";
+
+let emitter = inject('emitter');
 
 const results = ref([]);
 const isLoading = ref(false);
@@ -31,11 +33,15 @@ const err = ref(null);
 // },
 // data is not an array -> for loop
 
+emitter.on('SurveyQuestionsSaved', (poslanArray) => {
+    console.log('data was saved, poslan Array = ', poslanArray)
+    loadExperiences();
+})
 
 function loadExperiences() {
     // console.log('loadexp');
     isLoading.value = true;
-    fetch('https://survey-93121-default-rtdb.europe-west1.firebasedatabase.app/survey.son')
+    fetch('https://survey-93121-default-rtdb.europe-west1.firebasedatabase.app/survey.json')
     .then(response => {
         if(response.ok){
             // console.log(response);
