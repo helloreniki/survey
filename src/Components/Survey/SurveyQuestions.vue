@@ -23,7 +23,7 @@
                 </div>
             </div>
             <BaseButton type="submit" class="self-start">Submit</BaseButton>
-            <p v-if="error">{{ error }}</p>
+            <p class="text-red-500 text-sm">{{ err }}</p>
         </form>
     </BaseCard>
     {{ enteredName }}
@@ -36,6 +36,7 @@ import { ref } from "vue";
 const enteredName = ref('');
 const chosenRating = ref('');
 const invalidInput = ref(false);
+const err = ref(null);
 
 function submitSurvey() {
     if(enteredName.value === '' || chosenRating.value === null) {
@@ -46,7 +47,7 @@ function submitSurvey() {
     invalidInput.value = false;
     // console.log(enteredName.value),
     // console.log(chosenRating.value),
-    console.log('method submitSurvey'),
+    // console.log('method submitSurvey'),
     fetch('https://survey-93121-default-rtdb.europe-west1.firebasedatabase.app/survey.json', {
         method: 'POST',
         headers: {
@@ -56,6 +57,12 @@ function submitSurvey() {
             name: enteredName.value, // .value because of ref('')
             rating: chosenRating.value
         })
+    }).then(response => {
+        if (!response.ok) {
+            throw new Error('Data could not be saved! Please try again later.')
+        }
+    }).catch(error => {
+        err.value = error.message;
     })
 
     enteredName.value = '';
